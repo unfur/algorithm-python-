@@ -1,0 +1,49 @@
+# 数据输入函数
+def testData():
+    try:
+        data=input("请输入待排序数据：")
+        return [int(num) for num in data.split( )]
+    except ValueError:
+        print("输入需为整数")
+        testData()
+
+# 冒泡排序函数
+def bubbleSolt(data):
+    n = len(data)
+    for i in range(n-1):
+        solted=True               # 使用solted变量来标记是否发生排序变化，若未发生变化说明已经全部有序（初步优化）
+        for index in range(n-i-1):     # 每次排序后将索引范围减一，避免在已排序的元素内重复比较
+            if data[index]>data[index+1]:                            # 判断顺序正确性
+                data[index],data[index+1]=data[index+1],data[index]  # 错误则交换顺序
+                solted=False                                         # 标记已发生变化
+        if solted:
+            break
+    return data
+
+# 快速排序函数
+def quickSolt(data,low,high):
+    alow = low
+    ahigh = high
+    if len(data[low:high+1]) < 1:
+        return []       #  若元素个数小于1则返回空数组
+    snum = data[low]    # snum为哨兵，记录该元素，后续使用直接覆盖的方法
+    while(low < high):
+        while data[high]>snum:  # 寻找右侧小于哨兵的元素
+            high-=1
+        data[low]=data[high]
+        while data[low]<snum:  # 寻找左侧大于哨兵的元素
+            low+=1                                             
+        data[high]=data[low]
+    data[high]=snum             # 将最后指向的元素该为哨兵
+    return quickSolt(data,alow,low-1) + [snum] + quickSolt(data,low+1,ahigh)   # 采用递归
+
+
+
+
+
+
+if __name__ == '__main__':
+    data=testData()
+    print(f'冒泡排序的结果为：{bubbleSolt(data)}')   #执行冒泡排序并输出
+    data_copy=data.copy()
+    print(f'快速排序的结果为：{quickSolt(data,0,len(data)-1)}')  #执行快速排序并输出
